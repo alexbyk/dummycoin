@@ -27,7 +27,6 @@
     "@types/node": "^10.3.3",
     "google-protobuf": "^3.5.0",
     "grpc": "^1.13.0-pre1",
-    "reflect-metadata": "^0.1.12",
     "ts-node": "^6.1.2",
     "tsconfig-paths": "^3.4.0",
     "typescript": "^2.9.2"
