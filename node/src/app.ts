@@ -1,9 +1,15 @@
 import { ApiService } from './_proto/api_grpc_pb';
 
-import { PingReply, PingRequest, BalanceRequest, BalanceReply } from './_proto/api_pb';
+import {
+  PingReply, PingRequest, BalanceRequest, BalanceReply, TxItem,
+  SendTxReply,
+  PendingTxsReply,
+  Empty,
+} from './_proto/api_pb';
 import { Server, ServerCredentials, sendUnaryData, ServerUnaryCall } from 'grpc';
 import { Chain } from '@src/libdummy/chain';
 import { MemoryStore } from '@src/libdummy/memory-store';
+import { ITx } from '@src/libdummy/block';
 
 /**
  * Our application as a separate class for testing purposes
@@ -12,10 +18,25 @@ import { MemoryStore } from '@src/libdummy/memory-store';
 export class App {
   grpcServer = new Server();
   chain = new Chain(new MemoryStore());
+  txQueue: ITx[] = [];
 
-  sendPing = (call: ServerUnaryCall<PingRequest>, callback: sendUnaryData<PingReply>) => {
-    const reply = new PingReply();
-    reply.setMessage('Pong ' + call.request.getName());
+  pendingTxs = async (call: ServerUnaryCall<Empty>, callback: sendUnaryData<PendingTxsReply>) => {
+    const reply = new PendingTxsReply();
+    const txs = this.txQueue.map(tx => {
+      const txi = new TxItem();
+      txi.setAmount(tx.amount);
+      txi.setFrom(tx.from);
+      txi.setTo(tx.to);
+      return txi;
+    });
+    reply.setQueueList(txs);
+    callback(null, reply);
+  }
+
+  sendTx = async (call: ServerUnaryCall<TxItem>, callback: sendUnaryData<SendTxReply>) => {
+    const reply = new SendTxReply();
+    this.txQueue.push(call.request.toObject());
+    reply.setPending(this.txQueue.length);
     callback(null, reply);
   }
 
@@ -27,10 +48,18 @@ export class App {
     callback(null, reply);
   }
 
+  sendPing = (call: ServerUnaryCall<PingRequest>, callback: sendUnaryData<PingReply>) => {
+    const reply = new PingReply();
+    reply.setMessage('Pong ' + call.request.getName());
+    callback(null, reply);
+  }
+
   start(host: string, port: number) {
     this.grpcServer.addService(ApiService, {
       sendPing: this.sendPing,
       getBalance: this.getBalance,
+      sendTx: this.sendTx,
+      pendingTxs: this.pendingTxs,
     });
     const actualPort = this.grpcServer.bind(`${host}:${port}`, ServerCredentials.createInsecure());
     this.grpcServer.start();

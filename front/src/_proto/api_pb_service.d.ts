@@ -22,10 +22,30 @@ type ApiSendPing = {
   readonly responseType: typeof api_pb.PingReply;
 };
 
+type ApiSendTx = {
+  readonly methodName: string;
+  readonly service: typeof Api;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof api_pb.TxItem;
+  readonly responseType: typeof api_pb.SendTxReply;
+};
+
+type ApiPendingTxs = {
+  readonly methodName: string;
+  readonly service: typeof Api;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof api_pb.Empty;
+  readonly responseType: typeof api_pb.PendingTxsReply;
+};
+
 export class Api {
   static readonly serviceName: string;
   static readonly GetBalance: ApiGetBalance;
   static readonly SendPing: ApiSendPing;
+  static readonly SendTx: ApiSendTx;
+  static readonly PendingTxs: ApiPendingTxs;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -60,6 +80,24 @@ export class ApiClient {
   sendPing(
     requestMessage: api_pb.PingRequest,
     callback: (error: ServiceError, responseMessage: api_pb.PingReply|null) => void
+  ): void;
+  sendTx(
+    requestMessage: api_pb.TxItem,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError, responseMessage: api_pb.SendTxReply|null) => void
+  ): void;
+  sendTx(
+    requestMessage: api_pb.TxItem,
+    callback: (error: ServiceError, responseMessage: api_pb.SendTxReply|null) => void
+  ): void;
+  pendingTxs(
+    requestMessage: api_pb.Empty,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError, responseMessage: api_pb.PendingTxsReply|null) => void
+  ): void;
+  pendingTxs(
+    requestMessage: api_pb.Empty,
+    callback: (error: ServiceError, responseMessage: api_pb.PendingTxsReply|null) => void
   ): void;
 }
 

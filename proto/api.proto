@@ -8,6 +8,26 @@ service Api {
 
   // Sends a ping
   rpc SendPing (PingRequest) returns (PingReply);
+
+  // add tx to the pending transactions queue size
+  rpc SendTx (TxItem) returns (SendTxReply);
+
+  rpc PendingTxs(Empty) returns(PendingTxsReply);
+}
+
+message TxItem {
+  string from = 1;
+  string to = 2;
+  int64 amount = 3;
+}
+
+// The pending queue that should be mined
+message PendingTxsReply {
+  repeated TxItem queue = 1;
+}
+
+message SendTxReply {
+  int64 pending = 1;
 }
 
 // The balance request containing user's id
@@ -29,3 +49,5 @@ message PingRequest {
 message PingReply {
   string message = 1;
 }
+
+message Empty {}

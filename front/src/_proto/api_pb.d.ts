@@ -3,6 +3,76 @@
 
 import * as jspb from "google-protobuf";
 
+export class TxItem extends jspb.Message {
+  getFrom(): string;
+  setFrom(value: string): void;
+
+  getTo(): string;
+  setTo(value: string): void;
+
+  getAmount(): number;
+  setAmount(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TxItem.AsObject;
+  static toObject(includeInstance: boolean, msg: TxItem): TxItem.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: TxItem, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TxItem;
+  static deserializeBinaryFromReader(message: TxItem, reader: jspb.BinaryReader): TxItem;
+}
+
+export namespace TxItem {
+  export type AsObject = {
+    from: string,
+    to: string,
+    amount: number,
+  }
+}
+
+export class PendingTxsReply extends jspb.Message {
+  clearQueueList(): void;
+  getQueueList(): Array<TxItem>;
+  setQueueList(value: Array<TxItem>): void;
+  addQueue(value?: TxItem, index?: number): TxItem;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PendingTxsReply.AsObject;
+  static toObject(includeInstance: boolean, msg: PendingTxsReply): PendingTxsReply.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PendingTxsReply, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PendingTxsReply;
+  static deserializeBinaryFromReader(message: PendingTxsReply, reader: jspb.BinaryReader): PendingTxsReply;
+}
+
+export namespace PendingTxsReply {
+  export type AsObject = {
+    queueList: Array<TxItem.AsObject>,
+  }
+}
+
+export class SendTxReply extends jspb.Message {
+  getPending(): number;
+  setPending(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SendTxReply.AsObject;
+  static toObject(includeInstance: boolean, msg: SendTxReply): SendTxReply.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SendTxReply, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SendTxReply;
+  static deserializeBinaryFromReader(message: SendTxReply, reader: jspb.BinaryReader): SendTxReply;
+}
+
+export namespace SendTxReply {
+  export type AsObject = {
+    pending: number,
+  }
+}
+
 export class BalanceRequest extends jspb.Message {
   getId(): string;
   setId(value: string): void;
@@ -80,6 +150,22 @@ export class PingReply extends jspb.Message {
 export namespace PingReply {
   export type AsObject = {
     message: string,
+  }
+}
+
+export class Empty extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Empty.AsObject;
+  static toObject(includeInstance: boolean, msg: Empty): Empty.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Empty, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Empty;
+  static deserializeBinaryFromReader(message: Empty, reader: jspb.BinaryReader): Empty;
+}
+
+export namespace Empty {
+  export type AsObject = {
   }
 }
 
