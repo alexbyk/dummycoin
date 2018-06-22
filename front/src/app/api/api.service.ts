@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiGrpc } from './api-grpc';
-import { BalanceRequest } from '../../_proto/api_pb';
-import { Api } from '../../_proto/api_pb_service';
+import { BalanceRequest } from '@src/_proto/api_pb';
+import { Api } from '@src/_proto/api_pb_service';
 
 @Injectable({
   providedIn: 'root'

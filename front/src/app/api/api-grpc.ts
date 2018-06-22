@@ -3,11 +3,11 @@ import { UnaryOutput } from 'grpc-web-client/dist/unary';
 import { ProtobufMessage } from 'grpc-web-client/dist/message';
 import { UnaryMethodDefinition } from 'grpc-web-client/dist/service';
 import { grpc } from 'grpc-web-client';
-import { environment } from '../../environments/environment';
+import { environment } from '@src/environments/environment';
 import { tap, switchMap, finalize } from 'rxjs/operators';
 
-import { PingRequest } from '../../_proto/api_pb';
-import { Api } from '../../_proto/api_pb_service';
+import { PingRequest } from '@src/_proto/api_pb';
+import { Api } from '@src/_proto/api_pb_service';
 
 /** An abstraction layer between an application and api */
 export class ApiGrpc {

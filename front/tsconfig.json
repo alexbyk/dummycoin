@@ -17,10 +17,13 @@
       "dom"
     ],
     "paths": {
-      "https": [
-        "src/grpc-transport-patch.js"
+      "@src/*": [
+        "./src/*"
       ],
       "http": [
+        "src/grpc-transport-patch.js"
+      ],
+      "https": [
         "src/grpc-transport-patch.js"
       ]
     }
