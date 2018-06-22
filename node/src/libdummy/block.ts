@@ -46,7 +46,9 @@ export class Block implements IBlock {
   constructor(opts: IBlock) { Object.assign(this, opts); } // for simplicity
 
   /** decode json and return an array of transactions */
-  getData(): ITx[] { return JSON.parse(this.data); }
+  getData(): ITx[] {
+    try { return JSON.parse(this.data); } catch (e) { return []; }
+  }
 
   validate() { return Block.validate(this); }
 

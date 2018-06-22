@@ -54,6 +54,8 @@ test('Should create a new block', () => {
   const block = new Block({ ...meta, data, pow, hash });
   expect(block.getData()).toEqual(dataObj);
   expect(block.validate()).toBe(true);
+  expect((new Block({ ...meta, data: 'corrupted{', pow, hash }))
+    .getData()).toEqual([]);
 });
 
 test('genNextBlock', () => {
