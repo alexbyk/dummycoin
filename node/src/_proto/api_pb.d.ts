@@ -3,6 +3,50 @@
 
 import * as jspb from "google-protobuf";
 
+export class MineRequest extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MineRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: MineRequest): MineRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: MineRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MineRequest;
+  static deserializeBinaryFromReader(message: MineRequest, reader: jspb.BinaryReader): MineRequest;
+}
+
+export namespace MineRequest {
+  export type AsObject = {
+    id: string,
+  }
+}
+
+export class MineReply extends jspb.Message {
+  getAmount(): number;
+  setAmount(value: number): void;
+
+  getIndex(): number;
+  setIndex(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MineReply.AsObject;
+  static toObject(includeInstance: boolean, msg: MineReply): MineReply.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: MineReply, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MineReply;
+  static deserializeBinaryFromReader(message: MineReply, reader: jspb.BinaryReader): MineReply;
+}
+
+export namespace MineReply {
+  export type AsObject = {
+    amount: number,
+    index: number,
+  }
+}
+
 export class TxItem extends jspb.Message {
   getFrom(): string;
   setFrom(value: string): void;

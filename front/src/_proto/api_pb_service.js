@@ -46,6 +46,15 @@ Api.PendingTxs = {
   responseType: api_pb.PendingTxsReply
 };
 
+Api.Mine = {
+  methodName: "Mine",
+  service: Api,
+  requestStream: false,
+  responseStream: false,
+  requestType: api_pb.MineRequest,
+  responseType: api_pb.MineReply
+};
+
 exports.Api = Api;
 
 function ApiClient(serviceHost, options) {
@@ -121,6 +130,27 @@ ApiClient.prototype.pendingTxs = function pendingTxs(requestMessage, metadata, c
     callback = arguments[1];
   }
   grpc.unary(Api.PendingTxs, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          callback(Object.assign(new Error(response.statusMessage), { code: response.status, metadata: response.trailers }), null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+};
+
+ApiClient.prototype.mine = function mine(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  grpc.unary(Api.Mine, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

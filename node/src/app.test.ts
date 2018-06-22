@@ -2,7 +2,7 @@ import { Tester, promisify } from '@src/tester';
 import { ApiClient } from '@src/_proto/api_grpc_pb';
 import {
   PingRequest, PingReply, BalanceRequest,
-  BalanceReply, TxItem, SendTxReply, PendingTxsReply, Empty,
+  BalanceReply, TxItem, SendTxReply, PendingTxsReply, Empty, MineRequest, MineReply,
 } from '@src/_proto/api_pb';
 
 /** Functional test that ensures everything works as expected */
@@ -55,4 +55,18 @@ test('roundtip', async () => {
   expect(txs[0].getTo()).toEqual('foo');
   expect(txs[0].getAmount()).toEqual(2);
   expect(txs.length).toEqual(1);
+
+  // mine block
+  const mineReq = new MineRequest();
+  mineReq.setId('miner');
+  let mineReply = await promisify<MineReply>(client, 'mine')(mineReq);
+  expect(mineReply.getAmount()).toBe(100);
+  expect(mineReply.getIndex()).toBe(1);
+  expect(await getBalance('foo')).toBe(2);
+  expect(await getBalance('miner')).toBe(100);
+  expect((await pendingTxs()).length).toBe(0);
+
+  // mine empty block again
+  mineReply = await promisify<MineReply>(client, 'mine')(mineReq);
+  expect(mineReply.getAmount()).toBe(200);
 });

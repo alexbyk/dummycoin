@@ -37,6 +37,28 @@ function deserialize_api_Empty(buffer_arg) {
   return api_pb.Empty.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_api_MineReply(arg) {
+  if (!(arg instanceof api_pb.MineReply)) {
+    throw new Error('Expected argument of type api.MineReply');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_api_MineReply(buffer_arg) {
+  return api_pb.MineReply.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_api_MineRequest(arg) {
+  if (!(arg instanceof api_pb.MineRequest)) {
+    throw new Error('Expected argument of type api.MineRequest');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_api_MineRequest(buffer_arg) {
+  return api_pb.MineRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_api_PendingTxsReply(arg) {
   if (!(arg instanceof api_pb.PendingTxsReply)) {
     throw new Error('Expected argument of type api.PendingTxsReply');
@@ -119,7 +141,8 @@ var ApiService = exports.ApiService = {
     responseSerialize: serialize_api_PingReply,
     responseDeserialize: deserialize_api_PingReply,
   },
-  // add tx to the pending transactions queue size
+  // Add a transaction to the pending transactions
+  // Return pending transaction count
   sendTx: {
     path: '/api.Api/SendTx',
     requestStream: false,
@@ -131,6 +154,7 @@ var ApiService = exports.ApiService = {
     responseSerialize: serialize_api_SendTxReply,
     responseDeserialize: deserialize_api_SendTxReply,
   },
+  // Return a list of pending transactions
   pendingTxs: {
     path: '/api.Api/PendingTxs',
     requestStream: false,
@@ -141,6 +165,18 @@ var ApiService = exports.ApiService = {
     requestDeserialize: deserialize_api_Empty,
     responseSerialize: serialize_api_PendingTxsReply,
     responseDeserialize: deserialize_api_PendingTxsReply,
+  },
+  // Mine a block with transactions (may be empty)
+  mine: {
+    path: '/api.Api/Mine',
+    requestStream: false,
+    responseStream: false,
+    requestType: api_pb.MineRequest,
+    responseType: api_pb.MineReply,
+    requestSerialize: serialize_api_MineRequest,
+    requestDeserialize: deserialize_api_MineRequest,
+    responseSerialize: serialize_api_MineReply,
+    responseDeserialize: deserialize_api_MineReply,
   },
 };
 

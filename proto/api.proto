@@ -17,11 +17,19 @@ service Api {
   rpc PendingTxs(Empty) returns(PendingTxsReply);
 
   // Mine a block with transactions (may be empty)
-  rpc Mine(Empty) returns(MineReply);
+  rpc Mine(MineRequest) returns(MineReply);
+}
+
+message MineRequest{
+  // id of the miner
+  string id = 1;
 }
 
 message MineReply {
+  // new amount of the miner
   int64 amount = 1;
+
+  // the index of mined block
   int64 index = 2;
 }
 
