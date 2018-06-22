@@ -5,6 +5,8 @@ import {
   BalanceReply, TxItem, SendTxReply, PendingTxsReply, Empty,
 } from '@src/_proto/api_pb';
 
+/** Functional test that ensures everything works as expected */
+
 const tester = new Tester();
 afterAll(() => { tester.shutdown(); });
 
