@@ -1,5 +1,12 @@
 import * as crypto from 'crypto';
 
+/**
+ * Block is a class responsible for building and validation of the particular block
+ *
+ * The POW is finding a number that will lead a hash to have a leading zero. For simplicity
+ * the complexity is constant (one zero is enough)
+ */
+
 export interface ITx {
   from: string;
   to: string;
@@ -8,7 +15,7 @@ export interface ITx {
 
 /** Base is separated to calculate a pow */
 interface IBlockBase {
-  /** index of the block */
+  /** index of the block, needed to simplify consensus */
   index: number;
 
   /** milliseconds from epoch */
