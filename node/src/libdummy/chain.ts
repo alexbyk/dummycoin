@@ -1,7 +1,14 @@
 import { IStore } from '@src/libdummy/store.interface';
 import { Block, ITx } from '@src/libdummy/block';
 
-/** Chain is responsible for blockchain consistency and manipulations */
+/**
+ * Chain is responsible for blockchain consistency and manipulations
+ * For simplicity, consensus is literally 'pich only one branch'
+ * A balance is calculated by iteration the whole chain. There are no transactions
+ * signs and checks. User can spend money he doesn't own.
+ *
+ * Chain can use any storage, that satisfies IStore interface.
+ */
 export class Chain {
 
   constructor(private store: IStore) { }
