@@ -3,6 +3,46 @@
 
 import * as jspb from "google-protobuf";
 
+export class BalanceRequest extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): BalanceRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: BalanceRequest): BalanceRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: BalanceRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): BalanceRequest;
+  static deserializeBinaryFromReader(message: BalanceRequest, reader: jspb.BinaryReader): BalanceRequest;
+}
+
+export namespace BalanceRequest {
+  export type AsObject = {
+    id: string,
+  }
+}
+
+export class BalanceReply extends jspb.Message {
+  getAmount(): number;
+  setAmount(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): BalanceReply.AsObject;
+  static toObject(includeInstance: boolean, msg: BalanceReply): BalanceReply.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: BalanceReply, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): BalanceReply;
+  static deserializeBinaryFromReader(message: BalanceReply, reader: jspb.BinaryReader): BalanceReply;
+}
+
+export namespace BalanceReply {
+  export type AsObject = {
+    amount: number,
+  }
+}
+
 export class PingRequest extends jspb.Message {
   getName(): string;
   setName(value: string): void;

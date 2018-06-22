@@ -4,33 +4,42 @@
 var api_pb = require("./api_pb");
 var grpc = require("grpc-web-client").grpc;
 
-var Pinger = (function () {
-  function Pinger() {}
-  Pinger.serviceName = "api.Pinger";
-  return Pinger;
+var Api = (function () {
+  function Api() {}
+  Api.serviceName = "api.Api";
+  return Api;
 }());
 
-Pinger.SendPing = {
+Api.GetBalance = {
+  methodName: "GetBalance",
+  service: Api,
+  requestStream: false,
+  responseStream: false,
+  requestType: api_pb.BalanceRequest,
+  responseType: api_pb.BalanceReply
+};
+
+Api.SendPing = {
   methodName: "SendPing",
-  service: Pinger,
+  service: Api,
   requestStream: false,
   responseStream: false,
   requestType: api_pb.PingRequest,
   responseType: api_pb.PingReply
 };
 
-exports.Pinger = Pinger;
+exports.Api = Api;
 
-function PingerClient(serviceHost, options) {
+function ApiClient(serviceHost, options) {
   this.serviceHost = serviceHost;
   this.options = options || {};
 }
 
-PingerClient.prototype.sendPing = function sendPing(requestMessage, metadata, callback) {
+ApiClient.prototype.getBalance = function getBalance(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  grpc.unary(Pinger.SendPing, {
+  grpc.unary(Api.GetBalance, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -47,5 +56,26 @@ PingerClient.prototype.sendPing = function sendPing(requestMessage, metadata, ca
   });
 };
 
-exports.PingerClient = PingerClient;
+ApiClient.prototype.sendPing = function sendPing(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  grpc.unary(Api.SendPing, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          callback(Object.assign(new Error(response.statusMessage), { code: response.status, metadata: response.trailers }), null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+};
+
+exports.ApiClient = ApiClient;
 

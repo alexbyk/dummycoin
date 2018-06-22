@@ -4,18 +4,28 @@
 import * as api_pb from "./api_pb";
 import {grpc} from "grpc-web-client";
 
-type PingerSendPing = {
+type ApiGetBalance = {
   readonly methodName: string;
-  readonly service: typeof Pinger;
+  readonly service: typeof Api;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof api_pb.BalanceRequest;
+  readonly responseType: typeof api_pb.BalanceReply;
+};
+
+type ApiSendPing = {
+  readonly methodName: string;
+  readonly service: typeof Api;
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof api_pb.PingRequest;
   readonly responseType: typeof api_pb.PingReply;
 };
 
-export class Pinger {
+export class Api {
   static readonly serviceName: string;
-  static readonly SendPing: PingerSendPing;
+  static readonly GetBalance: ApiGetBalance;
+  static readonly SendPing: ApiSendPing;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -29,10 +39,19 @@ interface ResponseStream<T> {
   on(type: 'status', handler: (status: Status) => void): ResponseStream<T>;
 }
 
-export class PingerClient {
+export class ApiClient {
   readonly serviceHost: string;
 
   constructor(serviceHost: string, options?: ServiceClientOptions);
+  getBalance(
+    requestMessage: api_pb.BalanceRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError, responseMessage: api_pb.BalanceReply|null) => void
+  ): void;
+  getBalance(
+    requestMessage: api_pb.BalanceRequest,
+    callback: (error: ServiceError, responseMessage: api_pb.BalanceReply|null) => void
+  ): void;
   sendPing(
     requestMessage: api_pb.PingRequest,
     metadata: grpc.Metadata,

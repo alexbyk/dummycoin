@@ -3,11 +3,11 @@ import { UnaryOutput } from 'grpc-web-client/dist/unary';
 import { ProtobufMessage } from 'grpc-web-client/dist/message';
 import { UnaryMethodDefinition } from 'grpc-web-client/dist/service';
 import { grpc } from 'grpc-web-client';
-import { PingRequest } from '../../_proto/api_pb';
 import { environment } from '../../environments/environment';
-import { Pinger } from '../../_proto/api_pb_service';
-
 import { tap, switchMap, finalize } from 'rxjs/operators';
+
+import { PingRequest } from '../../_proto/api_pb';
+import { Api } from '../../_proto/api_pb_service';
 
 /** An abstraction layer between an application and api */
 export class ApiGrpc {
@@ -19,11 +19,14 @@ export class ApiGrpc {
 
   constructor() { }
 
+
+  /** ping method, also an example how to build methods */
   ping(name = 'DummyCoin Client') {
     const request = new PingRequest();
     request.setName(name);
-    return this.grpc(Pinger.SendPing, request);
+    return this.grpc(Api.SendPing, request);
   }
+
 
   /** Wrap the method to the Observable, TS is smart enough to guess TReply from the method argument */
   grpcWithoutCounter<TReply extends ProtobufMessage, TRequest extends ProtobufMessage>

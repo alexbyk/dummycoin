@@ -20,4 +20,10 @@ export class AppComponent {
     } catch (e) { console.log(e); }
   }
 
+  async getBalance() {
+    try {
+      this.message = (await this.api.getBalance('foo').toPromise()).getAmount() + '';
+    } catch (e) { console.log(e); }
+  }
+
 }

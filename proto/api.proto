@@ -1,10 +1,23 @@
 syntax = "proto3";
 package api;
 
-// The ping service definition.
-service Pinger {
+// The api service
+service Api {
+  // Get a balance of a user
+  rpc GetBalance(BalanceRequest) returns (BalanceReply);
+
   // Sends a ping
-  rpc SendPing (PingRequest) returns (PingReply) {}
+  rpc SendPing (PingRequest) returns (PingReply);
+}
+
+// The balance request containing user's id
+message BalanceRequest {
+  string id = 1;
+}
+
+// The balance response containing amount of money
+message BalanceReply {
+  int64 amount = 1;
 }
 
 // The ping request message containing the user's name.
