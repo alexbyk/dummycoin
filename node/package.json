@@ -1,0 +1,35 @@
+{
+  "name": "dummycoin-node",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "./node_modules/.bin/nodemon",
+    "start:prod": "./node_modules/.bin/ts-node src/index.ts",
+    "test": "./node_modules/.bin/jest",
+    "test:watch": "./node_modules/.bin/jest --watch"
+  },
+  "author": "alexbyk",
+  "private": true,
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^23.1.0",
+    "concurrently": "^3.6.0",
+    "jest": "^23.1.0",
+    "jest-runner-tslint": "^1.0.5",
+    "nodemon": "^1.17.5",
+    "ts-jest": "^22.4.6",
+    "grpc-tools": "^1.6.6",
+    "ts-protoc-gen": "^0.7.3",
+    "tslint": "^5.10.0"
+  },
+  "dependencies": {
+    "@types/node": "^10.3.3",
+    "google-protobuf": "^3.5.0",
+    "grpc": "^1.13.0-pre1",
+    "reflect-metadata": "^0.1.12",
+    "ts-node": "^6.1.2",
+    "tsconfig-paths": "^3.4.0",
+    "typescript": "^2.9.2"
+  }
+}

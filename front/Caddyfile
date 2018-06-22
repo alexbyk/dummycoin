@@ -1,0 +1,7 @@
+*
+tls off
+gzip
+root /app
+rewrite {
+	to {path} {path}/ /index.html
+}

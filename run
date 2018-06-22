@@ -1,0 +1,86 @@
+#!/bin/bash
+source .env
+echo "$PROJECT_NAME"
+
+NODE_DIR=$(dirname $BASH_SOURCE)/node
+FRONT_DIR=$(dirname $BASH_SOURCE)/front
+
+PROXY="docker run --rm --net=host jfyne/docker-grpcwebproxy /grpcwebproxy --server_http_debug_port=${PROXY_PORT} --backend_addr=localhost:${GRPC_PORT} --run_tls_server=false"
+
+NODE_BIN_DIR="./node/node_modules/.bin"
+
+OUT_NODE_DIR="${NODE_DIR}/src/_proto"
+OUT_FRONT_DIR="${FRONT_DIR}/src/_proto"
+
+PROTOC_GEN_TS_PATH="${NODE_BIN_DIR}/protoc-gen-ts"
+
+function protogen() {
+	mkdir -p $OUT_NODE_DIR && mkdir -p $OUT_FRONT_DIR &&
+		"$NODE_BIN_DIR"/grpc_tools_node_protoc \
+			--plugin=protoc-gen-ts="$NODE_BIN_DIR"/protoc-gen-ts \
+			--plugin=protoc-gen-grpc="$NODE_BIN_DIR"/grpc_tools_node_protoc_plugin \
+			-I proto \
+			--grpc_out=$OUT_NODE_DIR \
+			--js_out=import_style=commonjs,binary:$OUT_NODE_DIR \
+			--ts_out=$OUT_NODE_DIR \
+			--js_out=import_style=commonjs,binary:$OUT_FRONT_DIR \
+			--ts_out=service=true:$OUT_FRONT_DIR \
+			./proto/*.proto
+}
+
+function print_usage() {
+	echo "
+  Usage:
+      ./run                 - alias for ./run npm-install && ./run protogen && ./run start
+      ./run start           - start in development
+      ./run protogen        - generate proto code
+      ./run build-docker    - run tests, lint and build docker images
+      ./run npm-install     - install npm modules
+      ./run test            - run tests and lint once
+
+  without arguments runs start
+"
+}
+
+function start() {
+	CONCURRENTLY="$NODE_DIR/node_modules/.bin/concurrently -c gray,green,blue --names node,front,proxy"
+	$CONCURRENTLY "cd $NODE_DIR && npm start" "cd $FRONT_DIR && npm start" "$PROXY"
+}
+
+function build-docker() {
+	run-tests && (cd $NODE_DIR && docker build -t "$PROJECT_NAME:node" .) &&
+		(cd $FRONT_DIR && docker build -t "$PROJECT_NAME:front" .) &&
+    printf "\n\n\n---------\\nBuild successful. Push using: \n\n\t\tdocker push $PROJECT_NAME\n---------\n\n"
+}
+
+function npm-install() {
+	(cd $NODE_DIR && npm i) &&
+		(cd $FRONT_DIR && npm i)
+}
+
+function run-tests() {
+	(cd $NODE_DIR && npm run test) &&
+		(cd $FRONT_DIR && npm run lint && npm run test)
+}
+
+if [ "$#" -ge 2 ]; then
+ 	print_usage
+ 	exit 1
+ elif [ "$#" == 0 ]; then
+  npm-install && protogen && start
+ elif [ "$1" == "npm-install" ]; then
+ 	protogen
+ elif [ "$1" == "protogen" ]; then
+ 	protogen
+ elif [ "$1" == "start" ]; then
+   start
+ elif [ "$1" == "test" ]; then
+   run-tests
+ elif [ "$1" == "--help" ]; then
+ 	print_usage
+ elif [ "$1" == "build-docker" ]; then
+   build-docker
+else
+	print_usage
+	exit 1
+fi

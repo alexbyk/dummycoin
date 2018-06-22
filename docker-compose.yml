@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  proxy:
+    image: "jfyne/docker-grpcwebproxy"
+    network_mode: "host"
+    command: /grpcwebproxy --server_http_debug_port=9091 --backend_addr=localhost:9092 --run_tls_server=false
+  node:
+    image: "alexbyk/dummycoin:node"
+    network_mode: "host"
+  front:
+    image: "alexbyk/dummycoin:front"
+    network_mode: "host"
+
