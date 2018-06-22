@@ -31,6 +31,7 @@ export class Chain {
     return sum;
   }
 
+  /** Check chains and store the longest valid chain */
   async consensus(...arr: Block[][]) {
     let longest = await this.load();
     arr.map(blocks => Chain.selectValidBlocks(blocks)).forEach(blocks => {
