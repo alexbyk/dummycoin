@@ -5,7 +5,7 @@ type ClientCTor<T> = new (address: string, credentials: ChannelCredentials) => T
 
 /** Promisify client method */
 
-export function promisify<TReply = any, TRequest = any>(client: any, key: string) {
+export function promisify<TReply = any, TRequest = any>(client: any, key: keyof App) {
   const fn = client[key].bind(client);
   return (request: TRequest) => {
     return new Promise<TReply>((resolve, reject) => {
