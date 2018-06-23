@@ -57,3 +57,18 @@ test('consensus', async () => {
   await chain1.consensus(await chain2.load());
   expect((await chain1.load()).length).toBe(3 + 1);
 });
+
+test('findTxs', async () => {
+  const chain = createChain();
+  const txs = [
+    { from: 'foo', to: 'bar', amount: 1 },
+    { from: 'baz', to: 'foo', amount: 1 },
+    { from: 'other', to: 'other2', amount: 1 },
+  ];
+  await chain.addTxs([
+    { from: 'foo', to: 'bar', amount: 1 },
+    { from: 'baz', to: 'foo', amount: 1 },
+    { from: 'other', to: 'other2', amount: 1 },
+  ]);
+  expect(await chain.findTxs('foo')).toEqual(txs.slice(0, 2));
+});

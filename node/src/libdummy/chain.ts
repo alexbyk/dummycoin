@@ -21,6 +21,15 @@ export class Chain {
     return Chain.selectValidBlocks(await this.loadFromStore());
   }
 
+  /** Return all txs where id is in of or from field */
+  async findTxs(id: string) {
+    const res: ITx[] = [];
+    (await this.load()).forEach(b => b.getData().forEach(tx => {
+      if (tx.from === id || tx.to === id) res.push(tx);
+    }));
+    return res;
+  }
+
   /** Return the balance of the given purse */
   async getBalance(id: string) {
     let sum = 0;
