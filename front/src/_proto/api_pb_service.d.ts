@@ -49,6 +49,15 @@ type ApiMine = {
   readonly responseType: typeof api_pb.MineReply;
 };
 
+type ApiFindTxs = {
+  readonly methodName: string;
+  readonly service: typeof Api;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof api_pb.FindTxsRequest;
+  readonly responseType: typeof api_pb.FindTxsReply;
+};
+
 export class Api {
   static readonly serviceName: string;
   static readonly GetBalance: ApiGetBalance;
@@ -56,6 +65,7 @@ export class Api {
   static readonly SendTx: ApiSendTx;
   static readonly PendingTxs: ApiPendingTxs;
   static readonly Mine: ApiMine;
+  static readonly FindTxs: ApiFindTxs;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -117,6 +127,15 @@ export class ApiClient {
   mine(
     requestMessage: api_pb.MineRequest,
     callback: (error: ServiceError, responseMessage: api_pb.MineReply|null) => void
+  ): void;
+  findTxs(
+    requestMessage: api_pb.FindTxsRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError, responseMessage: api_pb.FindTxsReply|null) => void
+  ): void;
+  findTxs(
+    requestMessage: api_pb.FindTxsRequest,
+    callback: (error: ServiceError, responseMessage: api_pb.FindTxsReply|null) => void
   ): void;
 }
 

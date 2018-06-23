@@ -2,15 +2,20 @@ import { Tester, promisify } from '@src/tester';
 import { ApiClient } from '@src/_proto/api_grpc_pb';
 import {
   PingRequest, PingReply, BalanceRequest,
-  BalanceReply, TxItem, SendTxReply, PendingTxsReply, Empty, MineRequest, MineReply,
+  BalanceReply, TxItem, SendTxReply, PendingTxsReply, Empty, MineRequest, MineReply, FindTxsRequest, FindTxsReply,
 } from '@src/_proto/api_pb';
+import { Client } from 'grpc';
 
 /** Functional test that ensures everything works as expected */
 
-const tester = new Tester();
-afterAll(() => { tester.shutdown(); });
+let tester: Tester;
+let client: Client;
 
-const client = tester.buildClient(ApiClient);
+beforeEach(() => {
+  tester = new Tester();
+  client = tester.buildClient(ApiClient);
+});
+afterAll(() => { tester.shutdown(); });
 
 async function getBalance(id: string) {
   const reqBalance = new BalanceRequest();
@@ -75,4 +80,15 @@ test('roundtip', async () => {
   mineReply = await mine('miner');
   expect(mineReply.getAmount()).toBe(200);
   expect(mineReply.getIndex()).toBe(2);
+});
+
+test('findTxs', async () => {
+  await sendTx('foo', 'bar', 2);
+  await sendTx('other', 'foo', 2);
+  await sendTx('bad', 'bad', 2);
+  await mine('miner');
+  const req = new FindTxsRequest();
+  req.setId('foo');
+  const repl = await promisify<FindTxsReply>(client, 'findTxs')(req);
+  expect(repl.getQueueList().length).toBe(2);
 });

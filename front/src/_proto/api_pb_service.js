@@ -55,6 +55,15 @@ Api.Mine = {
   responseType: api_pb.MineReply
 };
 
+Api.FindTxs = {
+  methodName: "FindTxs",
+  service: Api,
+  requestStream: false,
+  responseStream: false,
+  requestType: api_pb.FindTxsRequest,
+  responseType: api_pb.FindTxsReply
+};
+
 exports.Api = Api;
 
 function ApiClient(serviceHost, options) {
@@ -151,6 +160,27 @@ ApiClient.prototype.mine = function mine(requestMessage, metadata, callback) {
     callback = arguments[1];
   }
   grpc.unary(Api.Mine, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          callback(Object.assign(new Error(response.statusMessage), { code: response.status, metadata: response.trailers }), null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+};
+
+ApiClient.prototype.findTxs = function findTxs(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  grpc.unary(Api.FindTxs, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

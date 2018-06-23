@@ -18,6 +18,18 @@ service Api {
 
   // Mine a block with transactions (may be empty)
   rpc Mine(MineRequest) returns(MineReply);
+
+  // Find txs where from or to equals a given id
+  rpc FindTxs(FindTxsRequest) returns(FindTxsReply);
+}
+
+message FindTxsRequest {
+  // id that should match from or to block
+  string id = 1;
+}
+
+message FindTxsReply {
+  repeated TxItem queue = 1;
 }
 
 message MineRequest{

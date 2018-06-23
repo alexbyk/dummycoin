@@ -3,6 +3,48 @@
 
 import * as jspb from "google-protobuf";
 
+export class FindTxsRequest extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): FindTxsRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: FindTxsRequest): FindTxsRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: FindTxsRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): FindTxsRequest;
+  static deserializeBinaryFromReader(message: FindTxsRequest, reader: jspb.BinaryReader): FindTxsRequest;
+}
+
+export namespace FindTxsRequest {
+  export type AsObject = {
+    id: string,
+  }
+}
+
+export class FindTxsReply extends jspb.Message {
+  clearQueueList(): void;
+  getQueueList(): Array<TxItem>;
+  setQueueList(value: Array<TxItem>): void;
+  addQueue(value?: TxItem, index?: number): TxItem;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): FindTxsReply.AsObject;
+  static toObject(includeInstance: boolean, msg: FindTxsReply): FindTxsReply.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: FindTxsReply, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): FindTxsReply;
+  static deserializeBinaryFromReader(message: FindTxsReply, reader: jspb.BinaryReader): FindTxsReply;
+}
+
+export namespace FindTxsReply {
+  export type AsObject = {
+    queueList: Array<TxItem.AsObject>,
+  }
+}
+
 export class MineRequest extends jspb.Message {
   getId(): string;
   setId(value: string): void;

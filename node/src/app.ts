@@ -22,6 +22,15 @@ export class App {
 
   findTxs = async (call: ServerUnaryCall<FindTxsRequest>, callback: sendUnaryData<FindTxsReply>) => {
     const reply = new FindTxsReply();
+    const txs = await this.chain.findTxs(call.request.getId());
+    const txItems = txs.map(tx => {
+      const txi = new TxItem();
+      txi.setAmount(tx.amount);
+      txi.setFrom(tx.from);
+      txi.setTo(tx.to);
+      return txi;
+    });
+    reply.setQueueList(txItems);
     callback(null, reply);
   }
 
