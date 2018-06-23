@@ -8,6 +8,7 @@ import { Server, ServerCredentials, sendUnaryData, ServerUnaryCall, handleCall }
 import { Chain } from '@src/libdummy/chain';
 import { MemoryStore } from '@src/libdummy/memory-store';
 import { ITx } from '@src/libdummy/block';
+import { Ctx } from '@src/ctx';
 
 const MINER_REWARD = 100;
 
@@ -20,14 +21,14 @@ export class App {
   chain = new Chain(new MemoryStore());
   txQueue: ITx[] = [];
 
-  async findTxs(ctx: ICtx<FindTxsRequest, FindTxsReply>) {
+  async findTxs(ctx: Ctx<FindTxsRequest, FindTxsReply>) {
     const reply = new FindTxsReply();
     const txs = await this.chain.findTxs(ctx.call.request.getId());
     reply.setQueueList(txsToItems(txs));
-    ctx.callback(null, reply);
+    ctx.ok(reply);
   }
 
-  async mine(ctx: ICtx<MineRequest, MineReply>) {
+  async mine(ctx: Ctx<MineRequest, MineReply>) {
     const minerId = ctx.call.request.getId();
     const minerTx = { from: 'SYSTEM', to: minerId, amount: MINER_REWARD };
     const block = await this.chain.addTxs([...this.txQueue, minerTx]);
@@ -38,20 +39,20 @@ export class App {
     ctx.callback(null, reply);
   }
 
-  async pendingTxs(ctx: ICtx<Empty, PendingTxsReply>) {
+  async pendingTxs(ctx: Ctx<Empty, PendingTxsReply>) {
     const reply = new PendingTxsReply();
     reply.setQueueList(txsToItems(this.txQueue));
     ctx.callback(null, reply);
   }
 
-  async sendTx(ctx: ICtx<TxItem, SendTxReply>) {
+  async sendTx(ctx: Ctx<TxItem, SendTxReply>) {
     const reply = new SendTxReply();
     this.txQueue.push(ctx.call.request.toObject());
     reply.setPending(this.txQueue.length);
     ctx.callback(null, reply);
   }
 
-  async getBalance(ctx: ICtx<BalanceRequest, BalanceReply>) {
+  async getBalance(ctx: Ctx<BalanceRequest, BalanceReply>) {
     const reply = new BalanceReply();
     const id = ctx.call.request.getId();
     const balance = await this.chain.getBalance(id);
@@ -59,7 +60,7 @@ export class App {
     ctx.callback(null, reply);
   }
 
-  sendPing(ctx: ICtx<PingRequest, PingReply>) {
+  sendPing(ctx: Ctx<PingRequest, PingReply>) {
     const reply = new PingReply();
     reply.setMessage('Pong ' + ctx.call.request.getName());
     ctx.callback(null, reply);
@@ -83,9 +84,9 @@ export class App {
    * to avoid cumbersome definitions like
    * sendPing = (call: ServerUnaryCall<PingRequest>, callback: sendUnaryData<PingReply>) => {
    */
-  wrapMethod(meth: (ctx: ICtx<any, any>) => void): handleCall<any, any> {
+  wrapMethod(meth: (ctx: Ctx<any, any>) => void): handleCall<any, any> {
     meth = meth.bind(this);
-    return (call: any, callback: any) => meth({ call, callback });
+    return (call: any, callback: any) => meth(new Ctx(call, callback));
   }
 
   wrapDefinition(ctxDef: { [k: string]: ctxHandleCall }) {
@@ -95,12 +96,7 @@ export class App {
   }
 }
 
-type ctxHandleCall<Req = any, Reply = any> = (ctx: ICtx<Req, Reply>) => void;
-
-interface ICtx<Req, Repl> {
-  call: ServerUnaryCall<Req>;
-  callback: sendUnaryData<Repl>;
-}
+type ctxHandleCall<Req = any, Reply = any> = (ctx: Ctx<Req, Reply>) => void;
 
 function txsToItems(txs: ITx[]) {
   return txs.map(tx => {
