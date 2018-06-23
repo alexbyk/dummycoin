@@ -1,0 +1,56 @@
+@import '../colors';
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  nav {
+    background-color: black;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    font-weight: 300;
+    overflow-x: auto;
+    a {
+      border: 2px solid rgba(0,0,0,0);
+      text-decoration: none;
+      font-size: 20px;
+      &:hover { color: $brand; }
+      padding: 20px;
+      margin: 0 10px 0;
+      color: white;
+      transition: .3s ease-out;
+      &.active {
+        color: desaturate($brand, 40%);
+        border-bottom: 2px solid $brand;
+      };
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      mat-icon { margin-bottom: 6px; }
+    }
+  }
+
+  main {
+    flex: 1;
+    padding-top: 20px;
+    background-color: #dedede;
+  }
+
+  footer {
+    background-color: lighten(black, 5%);
+    .grid-container{
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: center;
+      color: darken(white, 20%);
+      a { color: darken(white, 20%);;}
+      &>* {
+        margin: 20px;
+      }
+    }
+  }
+}

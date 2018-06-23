@@ -1,4 +1,23 @@
-<h1>{{title}} {{ api.counter }}</h1>
-<button (click)="getMessage()">ping</button>
-<button (click)="getBalance()">balance</button>
-{{ message }}
+<div class="layout">
+  <nav>
+    <a *ngFor="let l of links" [routerLink]="l.href" [routerLinkActiveOptions]="{exact: true}"
+      routerLinkActive="active">
+      <mat-icon>{{l.icon}}</mat-icon>
+      <div class="show-for-medium">{{l.title}}</div>
+    </a>
+  </nav>
+  <main class="mat-typography">
+    <router-outlet></router-outlet>
+  </main>
+  <footer>
+
+    <div class="grid-container">
+      <a *ngFor="let l of links" [routerLink]="l.href" routerLinkActive="active">
+        <div>{{l.title}}</div>
+      </a>
+      <span>&copy;
+        <a href="https://alexbyk.com" target="_blank">alexbyk.com</a>, 2018</span>
+    </div>
+
+  </footer>
+</div>
