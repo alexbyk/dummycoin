@@ -4,7 +4,7 @@ import {
   PingReply, PingRequest, BalanceRequest, BalanceReply, TxItem,
   SendTxReply, PendingTxsReply, Empty, MineRequest, MineReply, FindTxsRequest, FindTxsReply,
 } from './_proto/api_pb';
-import { Server, ServerCredentials, sendUnaryData, ServerUnaryCall, handleCall } from 'grpc';
+import { Server, ServerCredentials } from 'grpc';
 import { Chain } from '@src/libdummy/chain';
 import { MemoryStore } from '@src/libdummy/memory-store';
 import { ITx } from '@src/libdummy/block';
@@ -67,7 +67,7 @@ export class App {
   }
 
   start(host: string, port: number) {
-    this.grpcServer.addService(ApiService, this.wrapDefinition({
+    this.grpcServer.addService(ApiService, Ctx.wrapDefinition(this, {
       sendPing: this.sendPing,
       getBalance: this.getBalance,
       sendTx: this.sendTx,
@@ -79,24 +79,7 @@ export class App {
     this.grpcServer.start();
     return actualPort;
   }
-
-  /**
-   * to avoid cumbersome definitions like
-   * sendPing = (call: ServerUnaryCall<PingRequest>, callback: sendUnaryData<PingReply>) => {
-   */
-  wrapMethod(meth: (ctx: Ctx<any, any>) => void): handleCall<any, any> {
-    meth = meth.bind(this);
-    return (call: any, callback: any) => meth(new Ctx(call, callback));
-  }
-
-  wrapDefinition(ctxDef: { [k: string]: ctxHandleCall }) {
-    const def: { [k: string]: handleCall<any, any> } = {};
-    Object.keys(ctxDef).forEach(k => def[k] = this.wrapMethod(ctxDef[k]));
-    return def;
-  }
 }
-
-type ctxHandleCall<Req = any, Reply = any> = (ctx: Ctx<Req, Reply>) => void;
 
 function txsToItems(txs: ITx[]) {
   return txs.map(tx => {
