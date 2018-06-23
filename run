@@ -14,26 +14,26 @@ OUT_FRONT_DIR="${FRONT_DIR}/src/_proto"
 
 PROTOC_GEN_TS_PATH="${NODE_BIN_DIR}/protoc-gen-ts"
 
-function protogen() {
-	mkdir -p $OUT_NODE_DIR && mkdir -p $OUT_FRONT_DIR &&
-		"$NODE_BIN_DIR"/grpc_tools_node_protoc \
-			--plugin=protoc-gen-ts="$NODE_BIN_DIR"/protoc-gen-ts \
-			--plugin=protoc-gen-grpc="$NODE_BIN_DIR"/grpc_tools_node_protoc_plugin \
-			-I proto \
-			--grpc_out=$OUT_NODE_DIR \
-			--js_out=import_style=commonjs,binary:$OUT_NODE_DIR \
-			--ts_out=$OUT_NODE_DIR \
-			--js_out=import_style=commonjs,binary:$OUT_FRONT_DIR \
-			--ts_out=service=true:$OUT_FRONT_DIR \
-			./proto/*.proto
+function proto() {
+  mkdir -p $OUT_NODE_DIR && mkdir -p $OUT_FRONT_DIR &&
+    "$NODE_BIN_DIR"/grpc_tools_node_protoc \
+      --plugin=protoc-gen-ts="$NODE_BIN_DIR"/protoc-gen-ts \
+      --plugin=protoc-gen-grpc="$NODE_BIN_DIR"/grpc_tools_node_protoc_plugin \
+      -I proto \
+      --grpc_out=$OUT_NODE_DIR \
+      --js_out=import_style=commonjs,binary:$OUT_NODE_DIR \
+      --ts_out=$OUT_NODE_DIR \
+      --js_out=import_style=commonjs,binary:$OUT_FRONT_DIR \
+      --ts_out=service=true:$OUT_FRONT_DIR \
+      ./proto/*.proto
 }
 
 function print_usage() {
-	echo "
+  echo "
   Usage:
-      ./run                 - alias for ./run npm-install && ./run protogen && ./run start
+      ./run                 - alias for ./run npm-install && ./run proto && ./run start
       ./run start           - start in development
-      ./run protogen        - generate proto code
+      ./run proto           - generate proto code
       ./run build-docker    - run tests, lint and build docker images
       ./run npm-install     - install npm modules
       ./run test            - run tests and lint once
@@ -43,44 +43,44 @@ function print_usage() {
 }
 
 function start() {
-	CONCURRENTLY="$NODE_DIR/node_modules/.bin/concurrently -c gray,green,blue --names node,front,proxy"
-	$CONCURRENTLY "cd $NODE_DIR && npm start" "cd $FRONT_DIR && npm start" "$PROXY"
+  CONCURRENTLY="$NODE_DIR/node_modules/.bin/concurrently -c gray,green,blue --names node,front,proxy"
+  $CONCURRENTLY "cd $NODE_DIR && npm start" "cd $FRONT_DIR && npm start" "$PROXY"
 }
 
 function build-docker() {
-	run-tests && (cd $NODE_DIR && docker build -t "$PROJECT_NAME:node" .) &&
-		(cd $FRONT_DIR && docker build -t "$PROJECT_NAME:front" .) &&
+  run-tests && (cd $NODE_DIR && docker build -t "$PROJECT_NAME:node" .) &&
+    (cd $FRONT_DIR && docker build -t "$PROJECT_NAME:front" .) &&
     printf "\n\n\n---------\\nBuild successful. Push using: \n\n\t\tdocker push $PROJECT_NAME\n---------\n\n"
 }
 
 function npm-install() {
-	(cd $NODE_DIR && npm i) &&
-		(cd $FRONT_DIR && npm i)
+  (cd $NODE_DIR && npm i) &&
+    (cd $FRONT_DIR && npm i)
 }
 
 function run-tests() {
-	(cd $NODE_DIR && npm run test) &&
-		(cd $FRONT_DIR && npm run lint && npm run test)
+  (cd $NODE_DIR && npm run test) &&
+    (cd $FRONT_DIR && npm run lint && npm run test)
 }
 
 if [ "$#" -ge 2 ]; then
- 	print_usage
- 	exit 1
+   print_usage
+   exit 1
  elif [ "$#" == 0 ]; then
-  npm-install && protogen && start
+   npm-install && proto && start
  elif [ "$1" == "npm-install" ]; then
- 	protogen
- elif [ "$1" == "protogen" ]; then
- 	protogen
+   npm-install
+ elif [ "$1" == "proto" ]; then
+   proto
  elif [ "$1" == "start" ]; then
    start
  elif [ "$1" == "test" ]; then
    run-tests
  elif [ "$1" == "--help" ]; then
- 	print_usage
+   print_usage
  elif [ "$1" == "build-docker" ]; then
    build-docker
 else
-	print_usage
-	exit 1
+  print_usage
+  exit 1
 fi
