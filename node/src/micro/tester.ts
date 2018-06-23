@@ -1,11 +1,11 @@
-import { App } from '@src/app';
-import { credentials, ChannelCredentials } from 'grpc';
+import { credentials, ChannelCredentials, Client } from 'grpc';
+import { Application } from './application';
 
 type ClientCTor<T> = new (address: string, credentials: ChannelCredentials) => T;
 
 /** Promisify client method */
 
-export function promisify<TReply = any, TRequest = any>(client: any, key: keyof App) {
+function promisify<TReply = any, TRequest = any>(client: any, key: string) {
   const fn = client[key].bind(client);
   return (request: TRequest) => {
     return new Promise<TReply>((resolve, reject) => {
@@ -19,17 +19,21 @@ export function promisify<TReply = any, TRequest = any>(client: any, key: keyof 
 }
 
 /** Tester makes testing easier */
-export class Tester {
-  app = new App();
+export class Tester<TApp extends Application> {
   address: string;
-  constructor() {
+  constructor(public app: TApp) {
     const port = this.app.start('localhost', 0);
     this.address = `localhost:${port}`;
   }
+
   buildClient<T = any>(ctor: ClientCTor<T>): T {
     return new ctor(this.address, credentials.createInsecure());
   }
+  /** the same as function promisify but with type checking */
+
+  promisify<TReply = any, TRequest = any>(client: any, key: keyof TApp) {
+    return promisify<TReply, TRequest>(client, key as string);
+  }
 
   shutdown() { this.app.grpcServer.forceShutdown(); }
-
 }

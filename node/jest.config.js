@@ -1,7 +1,7 @@
 const common = {
   transform: { '^.+\\.tsx?$': 'ts-jest' },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  setupFiles: ['./src/setup-tests.ts'],
+  // setupFiles: ['./src/setup-tests.ts'],
   roots: ['<rootDir>/src',],
   testEnvironment: 'node',
   testPathIgnorePatterns: ["<rootDir>/src/_proto/", "<rootDir>/node_modules/"],

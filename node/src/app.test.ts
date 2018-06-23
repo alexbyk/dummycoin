@@ -1,18 +1,19 @@
-import { Tester, promisify } from '@src/tester';
+import { Tester } from '@src/micro/tester';
 import { ApiClient } from '@src/_proto/api_grpc_pb';
 import {
   PingRequest, PingReply, BalanceRequest,
   BalanceReply, TxItem, SendTxReply, PendingTxsReply, Empty, MineRequest, MineReply, FindTxsRequest, FindTxsReply,
 } from '@src/_proto/api_pb';
 import { Client } from 'grpc';
+import { App } from '@src/app';
 
 /** Functional test that ensures everything works as expected */
 
-let tester: Tester;
+let tester: Tester<App>;
 let client: Client;
 
 beforeEach(() => {
-  tester = new Tester();
+  tester = new Tester(new App());
   client = tester.buildClient(ApiClient);
 });
 afterAll(() => { tester.shutdown(); });
@@ -20,7 +21,7 @@ afterAll(() => { tester.shutdown(); });
 async function getBalance(id: string) {
   const reqBalance = new BalanceRequest();
   reqBalance.setId(id);
-  const repl = await promisify<BalanceReply>(client, 'getBalance')(reqBalance);
+  const repl = await tester.promisify<BalanceReply>(client, 'getBalance')(reqBalance);
   return repl.getAmount();
 }
 
@@ -29,26 +30,26 @@ async function sendTx(from: string, to: string, amount: number) {
   reqTx.setTo(to);
   reqTx.setFrom(from);
   reqTx.setAmount(amount);
-  const replTx = await promisify<SendTxReply>(client, 'sendTx')(reqTx);
+  const replTx = await tester.promisify<SendTxReply>(client, 'sendTx')(reqTx);
   return replTx.getPending();
 }
 
 async function pendingTxs() {
-  const repl = await promisify<PendingTxsReply>(client, 'pendingTxs')(new Empty());
+  const repl = await tester.promisify<PendingTxsReply>(client, 'pendingTxs')(new Empty());
   return repl.getQueueList();
 }
 
 async function mine(id: string) {
   const mineReq = new MineRequest();
   mineReq.setId(id);
-  const mineReply = await promisify<MineReply>(client, 'mine')(mineReq);
+  const mineReply = await tester.promisify<MineReply>(client, 'mine')(mineReq);
   return mineReply;
 }
 
 test('ping', async () => {
   const req = new PingRequest();
   req.setName('Foo');
-  const repl = await promisify<PingReply>(client, 'sendPing')(req);
+  const repl = await tester.promisify<PingReply>(client, 'sendPing')(req);
   expect(repl.getMessage()).toBe('Pong Foo');
 });
 
@@ -89,6 +90,6 @@ test('findTxs', async () => {
   await mine('miner');
   const req = new FindTxsRequest();
   req.setId('foo');
-  const repl = await promisify<FindTxsReply>(client, 'findTxs')(req);
+  const repl = await tester.promisify<FindTxsReply>(client, 'findTxs')(req);
   expect(repl.getQueueList().length).toBe(2);
 });

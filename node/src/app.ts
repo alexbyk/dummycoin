@@ -1,14 +1,13 @@
-import { ApiService } from './_proto/api_grpc_pb';
-
+import { ApiService } from '@src/_proto/api_grpc_pb';
 import {
   PingReply, PingRequest, BalanceRequest, BalanceReply, TxItem,
   SendTxReply, PendingTxsReply, Empty, MineRequest, MineReply, FindTxsRequest, FindTxsReply,
 } from './_proto/api_pb';
-import { Server, ServerCredentials } from 'grpc';
 import { Chain } from '@src/libdummy/chain';
 import { MemoryStore } from '@src/libdummy/memory-store';
 import { ITx } from '@src/libdummy/block';
-import { Ctx } from '@src/ctx';
+import { Ctx } from '@src/micro';
+import { Application } from '@src/micro/application';
 
 const MINER_REWARD = 100;
 
@@ -16,12 +15,9 @@ const MINER_REWARD = 100;
  * Our application as a separate class for testing purposes
  * Uses hardcoded Chain instance with in-memory storage. For real world this should be injected
  */
-export class App {
-  grpcServer = new Server();
+export class App extends Application {
   chain = new Chain(new MemoryStore());
   txQueue: ITx[] = [];
-
-  constructor() { this.registerHandlers(); }
 
   async findTxs(ctx: Ctx<FindTxsRequest, FindTxsReply>) {
     const reply = new FindTxsReply();
@@ -79,11 +75,6 @@ export class App {
     }));
   }
 
-  start(host: string, port: number) {
-    const actualPort = this.grpcServer.bind(`${host}:${port}`, ServerCredentials.createInsecure());
-    this.grpcServer.start();
-    return actualPort;
-  }
 }
 
 function txsToItems(txs: ITx[]) {
