@@ -11,6 +11,16 @@ import { Chain } from '@src/libdummy/chain';
 import { MemoryStore } from '@src/libdummy/memory-store';
 import { ITx } from '@src/libdummy/block';
 
+function txsToItems(txs: ITx[]) {
+  return txs.map(tx => {
+    const txi = new TxItem();
+    txi.setAmount(tx.amount);
+    txi.setFrom(tx.from);
+    txi.setTo(tx.to);
+    return txi;
+  });
+}
+
 /**
  * Our application as a separate class for testing purposes
  * Uses hardcoded Chain instance with in-memory storage. For real world this should be injected
@@ -23,14 +33,7 @@ export class App {
   findTxs = async (call: ServerUnaryCall<FindTxsRequest>, callback: sendUnaryData<FindTxsReply>) => {
     const reply = new FindTxsReply();
     const txs = await this.chain.findTxs(call.request.getId());
-    const txItems = txs.map(tx => {
-      const txi = new TxItem();
-      txi.setAmount(tx.amount);
-      txi.setFrom(tx.from);
-      txi.setTo(tx.to);
-      return txi;
-    });
-    reply.setQueueList(txItems);
+    reply.setQueueList(txsToItems(txs));
     callback(null, reply);
   }
 
@@ -47,14 +50,7 @@ export class App {
 
   pendingTxs = async (call: ServerUnaryCall<Empty>, callback: sendUnaryData<PendingTxsReply>) => {
     const reply = new PendingTxsReply();
-    const txs = this.txQueue.map(tx => {
-      const txi = new TxItem();
-      txi.setAmount(tx.amount);
-      txi.setFrom(tx.from);
-      txi.setTo(tx.to);
-      return txi;
-    });
-    reply.setQueueList(txs);
+    reply.setQueueList(txsToItems(this.txQueue));
     callback(null, reply);
   }
 
