@@ -37,6 +37,28 @@ function deserialize_api_Empty(buffer_arg) {
   return api_pb.Empty.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_api_FindTxsReply(arg) {
+  if (!(arg instanceof api_pb.FindTxsReply)) {
+    throw new Error('Expected argument of type api.FindTxsReply');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_api_FindTxsReply(buffer_arg) {
+  return api_pb.FindTxsReply.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_api_FindTxsRequest(arg) {
+  if (!(arg instanceof api_pb.FindTxsRequest)) {
+    throw new Error('Expected argument of type api.FindTxsRequest');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_api_FindTxsRequest(buffer_arg) {
+  return api_pb.FindTxsRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_api_MineReply(arg) {
   if (!(arg instanceof api_pb.MineReply)) {
     throw new Error('Expected argument of type api.MineReply');
@@ -177,6 +199,18 @@ var ApiService = exports.ApiService = {
     requestDeserialize: deserialize_api_MineRequest,
     responseSerialize: serialize_api_MineReply,
     responseDeserialize: deserialize_api_MineReply,
+  },
+  // Find txs where from or to equals a given id
+  findTxs: {
+    path: '/api.Api/FindTxs',
+    requestStream: false,
+    responseStream: false,
+    requestType: api_pb.FindTxsRequest,
+    responseType: api_pb.FindTxsReply,
+    requestSerialize: serialize_api_FindTxsRequest,
+    requestDeserialize: deserialize_api_FindTxsRequest,
+    responseSerialize: serialize_api_FindTxsReply,
+    responseDeserialize: deserialize_api_FindTxsReply,
   },
 };
 

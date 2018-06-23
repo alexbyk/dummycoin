@@ -33,6 +33,13 @@ async function pendingTxs() {
   return repl.getQueueList();
 }
 
+async function mine(id: string) {
+  const mineReq = new MineRequest();
+  mineReq.setId(id);
+  const mineReply = await promisify<MineReply>(client, 'mine')(mineReq);
+  return mineReply;
+}
+
 test('ping', async () => {
   const req = new PingRequest();
   req.setName('Foo');
@@ -57,9 +64,7 @@ test('roundtip', async () => {
   expect(txs.length).toEqual(1);
 
   // mine block
-  const mineReq = new MineRequest();
-  mineReq.setId('miner');
-  let mineReply = await promisify<MineReply>(client, 'mine')(mineReq);
+  let mineReply = await mine('miner');
   expect(mineReply.getAmount()).toBe(100);
   expect(mineReply.getIndex()).toBe(1);
   expect(await getBalance('foo')).toBe(2);
@@ -67,6 +72,7 @@ test('roundtip', async () => {
   expect((await pendingTxs()).length).toBe(0);
 
   // mine empty block again
-  mineReply = await promisify<MineReply>(client, 'mine')(mineReq);
+  mineReply = await mine('miner');
   expect(mineReply.getAmount()).toBe(200);
+  expect(mineReply.getIndex()).toBe(2);
 });

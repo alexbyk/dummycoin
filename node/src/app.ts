@@ -4,7 +4,7 @@ const MINER_REWARD = 100;
 
 import {
   PingReply, PingRequest, BalanceRequest, BalanceReply, TxItem,
-  SendTxReply, PendingTxsReply, Empty, MineRequest, MineReply,
+  SendTxReply, PendingTxsReply, Empty, MineRequest, MineReply, FindTxsRequest, FindTxsReply,
 } from './_proto/api_pb';
 import { Server, ServerCredentials, sendUnaryData, ServerUnaryCall } from 'grpc';
 import { Chain } from '@src/libdummy/chain';
@@ -19,6 +19,11 @@ export class App {
   grpcServer = new Server();
   chain = new Chain(new MemoryStore());
   txQueue: ITx[] = [];
+
+  findTxs = async (call: ServerUnaryCall<FindTxsRequest>, callback: sendUnaryData<FindTxsReply>) => {
+    const reply = new FindTxsReply();
+    callback(null, reply);
+  }
 
   mine = async (call: ServerUnaryCall<MineRequest>, callback: sendUnaryData<MineReply>) => {
     const minerId = call.request.getId();
@@ -72,6 +77,7 @@ export class App {
       sendTx: this.sendTx,
       pendingTxs: this.pendingTxs,
       mine: this.mine,
+      findTxs: this.findTxs,
     });
     const actualPort = this.grpcServer.bind(`${host}:${port}`, ServerCredentials.createInsecure());
     this.grpcServer.start();
