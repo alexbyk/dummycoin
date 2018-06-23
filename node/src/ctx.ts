@@ -18,7 +18,7 @@ export class Ctx<Req, Reply> {
   }
 
   /** return object remapped with wrapMethod */
-  static wrapDefinition(app: object, ctxDef: { [k: string]: ctxHandleCall }) {
+  static wrapImplementation(app: object, ctxDef: { [k: string]: ctxHandleCall }) {
     const def: { [k: string]: handleCall<any, any> } = {};
     Object.keys(ctxDef).forEach(k => def[k] = Ctx.wrapMethod(app, ctxDef[k]));
     return def;

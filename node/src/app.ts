@@ -21,53 +21,55 @@ export class App {
   chain = new Chain(new MemoryStore());
   txQueue: ITx[] = [];
 
+  constructor() { this.registerHandlers(); }
+
   async findTxs(ctx: Ctx<FindTxsRequest, FindTxsReply>) {
     const reply = new FindTxsReply();
-    const txs = await this.chain.findTxs(ctx.call.request.getId());
+    const txs = await this.chain.findTxs(ctx.req.getId());
     reply.setQueueList(txsToItems(txs));
     ctx.ok(reply);
   }
 
   async mine(ctx: Ctx<MineRequest, MineReply>) {
-    const minerId = ctx.call.request.getId();
+    const minerId = ctx.req.getId();
     const minerTx = { from: 'SYSTEM', to: minerId, amount: MINER_REWARD };
     const block = await this.chain.addTxs([...this.txQueue, minerTx]);
     this.txQueue = [];
     const reply = new MineReply();
     reply.setIndex(block.index);
     reply.setAmount(await this.chain.getBalance(minerId));
-    ctx.callback(null, reply);
+    ctx.ok(reply);
   }
 
   async pendingTxs(ctx: Ctx<Empty, PendingTxsReply>) {
     const reply = new PendingTxsReply();
     reply.setQueueList(txsToItems(this.txQueue));
-    ctx.callback(null, reply);
+    ctx.ok(reply);
   }
 
   async sendTx(ctx: Ctx<TxItem, SendTxReply>) {
     const reply = new SendTxReply();
-    this.txQueue.push(ctx.call.request.toObject());
+    this.txQueue.push(ctx.req.toObject());
     reply.setPending(this.txQueue.length);
-    ctx.callback(null, reply);
+    ctx.ok(reply);
   }
 
   async getBalance(ctx: Ctx<BalanceRequest, BalanceReply>) {
     const reply = new BalanceReply();
-    const id = ctx.call.request.getId();
+    const id = ctx.req.getId();
     const balance = await this.chain.getBalance(id);
     reply.setAmount(balance);
-    ctx.callback(null, reply);
+    ctx.ok(reply);
   }
 
   sendPing(ctx: Ctx<PingRequest, PingReply>) {
     const reply = new PingReply();
-    reply.setMessage('Pong ' + ctx.call.request.getName());
-    ctx.callback(null, reply);
+    reply.setMessage('Pong ' + ctx.req.getName());
+    ctx.ok(reply);
   }
 
-  start(host: string, port: number) {
-    this.grpcServer.addService(ApiService, Ctx.wrapDefinition(this, {
+  registerHandlers() {
+    this.grpcServer.addService(ApiService, Ctx.wrapImplementation(this, {
       sendPing: this.sendPing,
       getBalance: this.getBalance,
       sendTx: this.sendTx,
@@ -75,6 +77,9 @@ export class App {
       mine: this.mine,
       findTxs: this.findTxs,
     }));
+  }
+
+  start(host: string, port: number) {
     const actualPort = this.grpcServer.bind(`${host}:${port}`, ServerCredentials.createInsecure());
     this.grpcServer.start();
     return actualPort;
