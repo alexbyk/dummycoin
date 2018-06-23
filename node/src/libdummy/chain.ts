@@ -21,22 +21,25 @@ export class Chain {
     return Chain.selectValidBlocks(await this.loadFromStore());
   }
 
+  /** Load chain and invoke function for each tx in each block */
+  private async forAllTxs(fn: (tx: ITx) => void) {
+    (await this.load()).forEach(block => block.getData().forEach(fn));
+  }
+
   /** Return all txs where id is in of or from field */
   async findTxs(id: string) {
     const res: ITx[] = [];
-    (await this.load()).forEach(b => b.getData().forEach(tx => {
-      if (tx.from === id || tx.to === id) res.push(tx);
-    }));
+    await this.forAllTxs(tx => (tx.from === id || tx.to === id) && res.push(tx));
     return res;
   }
 
   /** Return the balance of the given purse */
   async getBalance(id: string) {
     let sum = 0;
-    (await this.load()).forEach(block => block.getData().forEach(tx => {
+    await this.forAllTxs(tx => {
       if (tx.from === id) sum -= tx.amount;
       if (tx.to === id) sum += tx.amount;
-    }));
+    });
     return sum;
   }
 
