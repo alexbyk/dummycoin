@@ -4,7 +4,7 @@ import { ProtobufMessage } from 'grpc-web-client/dist/message';
 import { UnaryMethodDefinition } from 'grpc-web-client/dist/service';
 import { grpc } from 'grpc-web-client';
 import { environment } from '@src/environments/environment';
-import { tap, switchMap, finalize } from 'rxjs/operators';
+import { tap, switchMap, finalize, delay } from 'rxjs/operators';
 
 import { PingRequest } from '@src/_proto/api_pb';
 import { Api } from '@src/_proto/api_pb_service';
@@ -38,7 +38,7 @@ export class ApiGrpc {
   grpc<TReply extends ProtobufMessage, TRequest extends ProtobufMessage>
     (method: UnaryMethodDefinition<TRequest, TReply>, request: TRequest): Observable<TReply> {
     return of(null).pipe(
-      tap(_ => this.counter++),
+      delay(0), tap(_ => this.counter++), // to avoid Angular checking problems
       switchMap(_ => this.grpcWithoutCounter(method, request)),
       finalize(() => this.counter--),
     );

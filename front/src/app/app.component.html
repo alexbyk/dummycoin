@@ -1,5 +1,6 @@
 <div class="layout">
   <div class="nav-holder">
+    <mat-progress-bar *ngIf="api.counter" mode="indeterminate" color="primary"></mat-progress-bar>
     <nav>
       <a *ngFor="let l of links" [routerLink]="l.href" [routerLinkActiveOptions]="{exact: true}"
         routerLinkActive="active">

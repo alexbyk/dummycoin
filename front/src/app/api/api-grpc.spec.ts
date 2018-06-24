@@ -1,7 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { ApiGrpc } from './api-grpc';
-import { Subject, throwError } from 'rxjs';
+import { throwError, of } from 'rxjs';
 
 describe('ApiGrpc', () => {
   beforeEach(() => {
@@ -10,21 +10,20 @@ describe('ApiGrpc', () => {
     });
   });
 
-  it('should increase and decrease counter on success', () => {
+  it('should increase and decrease counter on success', async () => {
     const api: ApiGrpc = TestBed.get(ApiGrpc);
-    const ob = new Subject();
-    spyOn(api, 'grpcWithoutCounter').and.returnValue(ob);
-    const sub = api.ping().subscribe();
-    expect(api.counter).toBe(1);
-    ob.next('Foo');
-    ob.complete();
+    spyOn(api, 'grpcWithoutCounter').and.callFake(() => {
+      expect(api.counter).toBe(1);
+      return of(null);
+    });
+    await api.ping().toPromise();
     expect(api.counter).toBe(0);
   });
 
   it('should increase and decrease counter on error', () => {
     const api: ApiGrpc = TestBed.get(ApiGrpc);
     spyOn(api, 'grpcWithoutCounter').and.returnValue(throwError('Foo'));
-    const sub = api.ping().subscribe(null, err => { });
+    api.ping().subscribe(null, err => { });
     expect(api.counter).toBe(0);
   });
 });

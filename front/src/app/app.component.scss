@@ -2,6 +2,13 @@
 @import '~foundation-sites/scss/foundation';
 
 .layout {
+
+  mat-progress-bar {
+    position: absolute;
+    top: 1;
+    z-index: 10001;
+  }
+
   background-color: #dedede;
   min-height: 100vh;
   display: flex;
