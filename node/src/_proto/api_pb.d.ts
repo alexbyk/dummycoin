@@ -183,6 +183,9 @@ export class BalanceReply extends jspb.Message {
   getAmount(): number;
   setAmount(value: number): void;
 
+  getPendingAmount(): number;
+  setPendingAmount(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): BalanceReply.AsObject;
   static toObject(includeInstance: boolean, msg: BalanceReply): BalanceReply.AsObject;
@@ -196,6 +199,7 @@ export class BalanceReply extends jspb.Message {
 export namespace BalanceReply {
   export type AsObject = {
     amount: number,
+    pendingAmount: number,
   }
 }
 

@@ -1339,7 +1339,8 @@ proto.api.BalanceReply.prototype.toObject = function(opt_includeInstance) {
  */
 proto.api.BalanceReply.toObject = function(includeInstance, msg) {
   var f, obj = {
-    amount: jspb.Message.getFieldWithDefault(msg, 1, 0)
+    amount: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    pendingAmount: jspb.Message.getFieldWithDefault(msg, 2, 0)
   };
 
   if (includeInstance) {
@@ -1380,6 +1381,10 @@ proto.api.BalanceReply.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {number} */ (reader.readInt64());
       msg.setAmount(value);
       break;
+    case 2:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setPendingAmount(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1416,6 +1421,13 @@ proto.api.BalanceReply.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getPendingAmount();
+  if (f !== 0) {
+    writer.writeInt64(
+      2,
+      f
+    );
+  }
 };
 
 
@@ -1431,6 +1443,21 @@ proto.api.BalanceReply.prototype.getAmount = function() {
 /** @param {number} value */
 proto.api.BalanceReply.prototype.setAmount = function(value) {
   jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional int64 pending_amount = 2;
+ * @return {number}
+ */
+proto.api.BalanceReply.prototype.getPendingAmount = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.api.BalanceReply.prototype.setPendingAmount = function(value) {
+  jspb.Message.setField(this, 2, value);
 };
 
 

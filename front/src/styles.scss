@@ -5,10 +5,26 @@
 @include foundation-xy-grid-classes;
 @include foundation-visibility-classes;
 
+@import './colors';
+
+html {
+  overflow-y: scroll;
+}
+
 .w100 {
   width: 100%;
 }
 
 .error {
   color: red;
+}
+
+.section-card {
+  margin-top: 40px;
+  border: 1px solid darken($bg-color, 10%);
+  padding: 20px;
+  display: block;
+  box-shadow: 2px 2px 4px 0 rgba(0,0,0,.1);
+  background-color: lighten($bg-color, 8%);
+  width: 100%;
 }

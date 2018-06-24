@@ -1,3 +1,55 @@
-.cell {
-  border: 1px solid blue;
+@import '../../../colors';
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.amount, .pending-count {
+  padding: 20px;
+  display: inline-block;
+  color: white;
+  font-size: 40px;
+  min-width: 4em;
+  text-align: center;
+}
+
+.amount {
+  background-color: $brand;
+  sup {
+    font-weight: 300;
+    font-size: 50%;
+  }
+}
+.pending-count {
+  background-color: gray;
+}
+
+.balance, .pending {
+  display: flex;
+}
+
+.history-container {
+  max-height: 300px;
+  overflow-y: auto;
+  display: block;
+}
+
+.history-item {
+  display: flex;
+
+  &:not(:first-child) {
+    border-top: 1px solid darken(white, 20%);
+  }
+  padding-top: 10px;
+  padding-bottom: 10px;
+  &>* {
+    line-height: 24px;
+    padding-right: 20px;
+  }
+}
+
+.history-item.out {
+  color: gray;
 }

@@ -53,8 +53,15 @@ export class App extends Application {
   async getBalance(ctx: Ctx<BalanceRequest, BalanceReply>) {
     const reply = new BalanceReply();
     const id = ctx.req.getId();
-    const balance = await this.chain.getBalance(id);
-    reply.setAmount(balance);
+    const amount = await this.chain.getBalance(id);
+    reply.setAmount(amount);
+
+    let pendingAmount = 0;
+    this.txQueue.forEach(tx => {
+      if (tx.from === id) pendingAmount -= tx.amount;
+      if (tx.to === id) pendingAmount += tx.amount;
+    });
+    reply.setPendingAmount(pendingAmount);
     ctx.ok(reply);
   }
 

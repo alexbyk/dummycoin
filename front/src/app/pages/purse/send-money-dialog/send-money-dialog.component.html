@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Send money</h1>
+<div mat-dialog-content>
+  <p>
+    <mat-form-field>
+      <input type="number" autocomplete="off" matInput placeholder="Amount" min="1" step="1"
+        [(ngModel)]="model.amount">
+    </mat-form-field>
+  </p>
+  <p>
+    <mat-form-field>
+      <input placeholder="To" matInput [(ngModel)]="model.to" autocomplete="off">
+    </mat-form-field>
+  </p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button [disabled]="!canSend()" [mat-dialog-close]="model" cdkFocusInitial>Ok</button>
+</div>

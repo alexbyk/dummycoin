@@ -1,11 +1,70 @@
 <div class="grid-container">
-  <div class="grid-x grid-margin-x">
-    <div class="cell small-12 medium-6">
+  <div class="header">
+    <h1>Hello, {{api.id}}</h1>
+    <button mat-mini-fab (click)="load()" color="primary">
+      <mat-icon aria-label="Example icon-button with a heart icon">sync</mat-icon>
+    </button>
+  </div>
 
-      <app-state [state]="balance">{{balance.data}}</app-state>
+  <div class="grid-x grid-margin-x">
+    <div class="cell small-12 medium-6 balance">
+
+      <div class="section-card">
+        <h2>Your balance</h2>
+        <app-state [state]="balance">
+          <div class="balance">
+            <span class="amount">{{balance.data?.amount}}
+              <sup *ngIf="balance.data?.pendingAmount" title="pending">{{balance.data?.pendingAmount}}</sup>
+            </span>
+            <button mat-button (click)="sendMoney()">Send money</button>
+          </div>
+          <div class="balance" state-loading>
+            <span class="amount">...</span>
+          </div>
+        </app-state>
+      </div>
 
     </div>
     <div class="cell small-12 medium-6">
+
+      <div class="section-card">
+        <h2>Pending transaction count</h2>
+        <app-state [state]="pending">
+          <div class="pending">
+            <span class="pending-count">{{pending.data}}</span>
+            <button (click)="mine()" mat-button>Mine a block</button>
+          </div>
+          <div class="pending" state-loading>
+            <span class="pending-count">...</span>
+          </div>
+        </app-state>
+      </div>
+
     </div>
   </div>
+
+  <div class="grid-x grid-margin-x">
+    <div class="cell small-12 medium-6 balance">
+
+      <div class="section-card">
+        <h2>Your transaction history</h2>
+        <app-state [state]="history" class="history-container">
+          <div *ngIf="!history.data?.length">No history yet</div>
+          <p state-loading>loading...</p>
+          <div class="history-item" [class.out]="item.type === 'out'" *ngFor="let item of history.data">
+            <div>{{item.amount}}</div>
+            <div>{{item.from}}</div>
+            <div>
+              <mat-icon>arrow_forward</mat-icon>
+            </div>
+            <div>{{item.to}}</div>
+          </div>
+        </app-state>
+      </div>
+
+
+    </div>
+  </div>
+
+
 </div>

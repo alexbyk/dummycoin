@@ -23,4 +23,5 @@ export class State<T> {
     );
     return state;
   }
+
 }

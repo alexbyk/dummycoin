@@ -19,16 +19,4 @@ export class AppComponent {
   ];
   constructor(public api: ApiService) { }
 
-  async getMessage() {
-    try {
-      this.message = (await this.api.ping().toPromise()).getMessage();
-    } catch (e) { console.log(e); }
-  }
-
-  async getBalance() {
-    try {
-      this.message = (await this.api.getBalance('foo').toPromise()).getAmount() + '';
-    } catch (e) { console.log(e); }
-  }
-
 }

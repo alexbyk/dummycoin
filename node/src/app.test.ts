@@ -22,7 +22,7 @@ async function getBalance(id: string) {
   const reqBalance = new BalanceRequest();
   reqBalance.setId(id);
   const repl = await tester.promisify<BalanceReply>(client, 'getBalance')(reqBalance);
-  return repl.getAmount();
+  return { amount: repl.getAmount(), pendingAmount: repl.getPendingAmount() };
 }
 
 async function sendTx(from: string, to: string, amount: number) {
@@ -57,12 +57,12 @@ test('roundtip', async () => {
   const chain = tester.app.chain;
 
   // initial
-  expect(await getBalance('foo')).toBe(0);
+  expect(await getBalance('foo')).toEqual({ amount: 0, pendingAmount: 0 });
   expect(await pendingTxs()).toEqual([]);
 
   // other1 -> foo, 2 coins
   expect(await sendTx('other1', 'foo', 2)).toBe(1);
-  expect(await getBalance('foo')).toBe(0);
+  expect(await getBalance('foo')).toEqual({ amount: 0, pendingAmount: 2 });
   const txs = (await pendingTxs());
   expect(txs[0].getFrom()).toEqual('other1');
   expect(txs[0].getTo()).toEqual('foo');
@@ -73,8 +73,8 @@ test('roundtip', async () => {
   let mineReply = await mine('miner');
   expect(mineReply.getAmount()).toBe(100);
   expect(mineReply.getIndex()).toBe(1);
-  expect(await getBalance('foo')).toBe(2);
-  expect(await getBalance('miner')).toBe(100);
+  expect(await getBalance('foo')).toEqual({ amount: 2, pendingAmount: 0 });
+  expect(await getBalance('miner')).toEqual({ amount: 100, pendingAmount: 0 });
   expect((await pendingTxs()).length).toBe(0);
 
   // mine empty block again
