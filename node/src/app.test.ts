@@ -16,7 +16,7 @@ beforeEach(() => {
   tester = new Tester(new App());
   client = tester.buildClient(ApiClient);
 });
-afterAll(() => { tester.shutdown(); });
+afterEach(() => { tester.shutdown(); });
 
 async function getBalance(id: string) {
   const reqBalance = new BalanceRequest();
