@@ -38,8 +38,11 @@ docker-compose down && docker-compose pull  && docker-compose up -d
 See the content of the `docker-compose.yml` to find docker-hub images
 
 ## Development
-* `./run` - build all neccessary files and protos and run development servers on `http://localhost:4200`
-* `./run test` - just run development server without rebuilding `api`
+
+`./run` should be your first command after `git clone`
+
+* `./run` - install node modules, build protos and run development servers on `http://localhost:4200`
+* `./run start` - just run development servers
 * `./run test` - test all
 * `./run --help` - see other commands, (docker, docs generation...)
 
