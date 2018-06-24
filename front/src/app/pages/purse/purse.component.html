@@ -13,10 +13,12 @@
         <h2>Your balance</h2>
         <app-state [state]="balance">
           <div class="balance">
-            <span class="amount">{{balance.data?.amount}}
+            <div class="amount">{{balance.data?.amount}}
               <sup *ngIf="balance.data?.pendingAmount" title="pending">{{balance.data?.pendingAmount}}</sup>
-            </span>
-            <button mat-button (click)="sendMoney()">Send money</button>
+            </div>
+            <div>
+              <button mat-stroked-button color="primary" (click)="sendMoney()">Send money</button>
+            </div>
           </div>
           <div class="balance" state-loading>
             <span class="amount">...</span>
@@ -32,7 +34,7 @@
         <app-state [state]="pending">
           <div class="pending">
             <span class="pending-count">{{pending.data}}</span>
-            <button (click)="mine()" mat-button>Mine a block</button>
+            <button mat-stroked-button color="primary" (click)="mine()" mat-button>Mine a block</button>
           </div>
           <div class="pending" state-loading>
             <span class="pending-count">...</span>

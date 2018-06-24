@@ -7,27 +7,35 @@
 }
 
 .amount, .pending-count {
-  padding: 20px;
-  display: inline-block;
+  font-size: 60px;
+
   color: white;
-  font-size: 40px;
-  min-width: 4em;
+  font-weight: 600;
+  line-height: 60px;
+  display: inline-block;
   text-align: center;
+  margin-right: 20px;
 }
 
 .amount {
-  background-color: $brand;
+  color: $brand;
+  font-weight: 600;
   sup {
     font-weight: 300;
-    font-size: 50%;
+    font-size: 20px;
+    top: -1.5em;
+    color: gray;
   }
 }
 .pending-count {
-  background-color: gray;
+  color: black;
 }
 
 .balance, .pending {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .history-container {
