@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService, ITxItemWithType } from '@src/app/api/api.service';
 import { State } from '@src/app/state';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { SendMoneyDialogComponent } from '@src/app/pages/purse/send-money-dialog/send-money-dialog.component';
 
 @Component({
@@ -15,7 +15,10 @@ export class PurseComponent implements OnInit {
   pending = new State<number>();
   history = new State<ITxItemWithType[]>();
 
-  constructor(public api: ApiService, public dialog: MatDialog) { }
+  constructor(
+    public api: ApiService, public dialog: MatDialog,
+    public snackBar: MatSnackBar,
+  ) { }
 
   async loadBalance() {
     this.api.getBalance().pipe();
@@ -34,18 +37,22 @@ export class PurseComponent implements OnInit {
       this.balance.data.amount = res.amount;
       this.balance.data.pendingAmount = 0;
       this.pending.data = 0;
+      this.snackBar.open(`Mined block #${res.index}`, null, { duration: 500, panelClass: 'snack-success' });
       this.loadHistory();
     } catch (e) {
       console.log(e);
+      this.snackBar.open(`Error: ${e}`, null, { duration: 2000, panelClass: 'snack-error' });
     }
   }
 
   private async doSendMoney(toId: string, amount: number) {
     try {
       this.pending.data = await this.api.sendTx(toId, amount).toPromise();
+      this.snackBar.open(`Money sent. Mine block`, null, { duration: 500, panelClass: 'snack-success' });
       this.loadBalance();
     } catch (e) {
       console.log(e);
+      this.snackBar.open(`Error: ${e}`, null, { duration: 2000, panelClass: 'snack-error' });
     }
   }
 

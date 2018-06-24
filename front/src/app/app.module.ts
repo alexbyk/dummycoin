@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { PurseComponent } from '@src/app/pages/purse/purse.component';
 import { ManageComponent } from '@src/app/pages/manage/manage.component';
@@ -37,7 +38,8 @@ import { SendMoneyDialogComponent } from './pages/purse/send-money-dialog/send-m
     MatButtonModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatSnackBarModule,
   ],
   entryComponents: [SendMoneyDialogComponent],
   providers: [],
