@@ -66,7 +66,8 @@ export class ApiService extends ApiGrpc {
           type,
         };
         return record;
-      })));
+      }).reverse(),
+      ));
   }
 
   mine(minerId: string = this.id) {
