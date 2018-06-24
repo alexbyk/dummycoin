@@ -1,11 +1,13 @@
 <div class="layout">
-  <nav>
-    <a *ngFor="let l of links" [routerLink]="l.href" [routerLinkActiveOptions]="{exact: true}"
-      routerLinkActive="active">
-      <mat-icon>{{l.icon}}</mat-icon>
-      <div class="show-for-medium">{{l.title}}</div>
-    </a>
-  </nav>
+  <div class="nav-holder">
+    <nav>
+      <a *ngFor="let l of links" [routerLink]="l.href" [routerLinkActiveOptions]="{exact: true}"
+        routerLinkActive="active">
+        <mat-icon>{{l.icon}}</mat-icon>
+        <div class="show-for-medium">{{l.title}}</div>
+      </a>
+    </nav>
+  </div>
   <main class="mat-typography">
     <router-outlet></router-outlet>
   </main>

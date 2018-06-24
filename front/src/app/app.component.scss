@@ -1,13 +1,25 @@
 @import '../colors';
+@import '~foundation-sites/scss/foundation';
 
 .layout {
   background-color: #dedede;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-width: 350px;
+
+  .nav-holder {
+    height: 74px;
+    @include breakpoint(medium) {
+      height: 97px;
+    }
+  }
 
   nav {
-    background-color: black;
+    position: fixed;
+    z-index: 1000;
+    width: 100%;
+    background-color: rgba(0,0,0,0.8);
     align-items: center;
     display: flex;
     justify-content: center;
