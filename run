@@ -70,8 +70,8 @@ function docs() {
   mkdir -p $DOCS_DIR/front
   mkdir -p $DOCS_DIR/node
   mkdir -p $DOCS_DIR/api
-  (cd $NODE_DIR && ./node_modules/.bin/typedoc --out ../docs/node --mode file --target ES6 ./src/) && \
-  (cd $FRONT_DIR && ./node_modules/.bin/typedoc --out ../docs/front --mode file --target ES6 ./src/) && \
+  (cd $NODE_DIR && ./node_modules/.bin/typedoc --readme none --out ../docs/node --mode file --target ES6 ./src/) && \
+  (cd $FRONT_DIR && ./node_modules/.bin/typedoc --readme none --out ../docs/front --mode file --target ES6 ./src/) && \
   docker run --rm  -v $(pwd)/docs/api:/out  -v $(pwd)/proto:/protos  pseudomuto/protoc-gen-doc
 }
 
