@@ -1,0 +1,11 @@
+<div *ngIf="state?.ready; else loading">
+  <div *ngIf="!state.error; else error">
+    <ng-content></ng-content>
+  </div>
+  <ng-template #error>
+    <div class="error">{{state.error}}</div>
+  </ng-template>
+</div>
+<ng-template #loading>
+  loading ...
+</ng-template>

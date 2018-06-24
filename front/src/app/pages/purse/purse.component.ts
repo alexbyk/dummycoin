@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '@src/app/api/api.service';
+import { State } from '@src/app/state';
 
 @Component({
   selector: 'app-purse',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PurseComponent implements OnInit {
 
-  constructor() { }
+  balance = new State();
+
+  constructor(public api: ApiService) { }
+
+  async loadBalance() {
+    this.balance = State.fromObservable(this.api.getBalance());
+  }
 
   ngOnInit() {
+    this.loadBalance();
   }
 
 }
