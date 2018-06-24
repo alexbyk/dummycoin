@@ -1,6 +1,33 @@
 <div class="grid-container">
+  <h1>DummyCoin infomration</h1>
   <div class="grid-x grid-margin-x">
-    <div class="cell small-4">cell</div>
-    <div class="cell small-4">cell</div>
+    <div class="cell small-12 medium-6">
+
+      <h2>Information</h2>
+      <p>DummyCoin is a simple blockchain client-server implementation. I made it as
+        a test task for "seaching for a new jobs" purposes</p>
+      <p>You can send coins from anyone to anyone. You can event send coins you don’t
+        own (and got a minus balance) – that’s for simplification by design.</p>
+      <p>Dummy coin has a constant proof-of-the-work complexity, simplified coin tracks
+        without encryption and simplified consensus algorithm.</p>
+      <p>While the algorithm is simple, the project itself is a good example of well
+        designed, simple and testable code</p>
+
+      <p>More information:
+        <a [href]="links[0].href" target="_blank" rel="noopener">here</a>
+      </p>
+      <p>Should work on desktop and mobile. Feedbacks are welcome</p>
+
+    </div>
+
+    <div class="cell small-12 medium-6">
+      <h2>Links</h2>
+      <ul>
+        <li *ngFor="let link of links ">
+          <a [href]="link.href" target="_blank" rel="noopener">{{link.title}}</a>
+        </li>
+      </ul>
+    </div>
+
   </div>
 </div>
