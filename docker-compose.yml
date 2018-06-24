@@ -11,4 +11,7 @@ services:
   front:
     image: "alexbyk/dummycoin:front"
     network_mode: "host"
+  docs:
+    image: "alexbyk/dummycoin:docs"
+    network_mode: "host"
 

@@ -15,13 +15,14 @@
   "devDependencies": {
     "@types/jest": "^23.1.0",
     "concurrently": "^3.6.0",
+    "grpc-tools": "^1.6.6",
     "jest": "^23.1.0",
     "jest-runner-tslint": "^1.0.5",
     "nodemon": "^1.17.5",
     "ts-jest": "^22.4.6",
-    "grpc-tools": "^1.6.6",
     "ts-protoc-gen": "^0.7.3",
-    "tslint": "^5.10.0"
+    "tslint": "^5.10.0",
+    "typedoc": "^0.11.1"
   },
   "dependencies": {
     "@types/node": "^10.3.3",

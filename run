@@ -2,8 +2,9 @@
 source .env
 echo "$PROJECT_NAME"
 
-NODE_DIR=$(dirname $BASH_SOURCE)/node
-FRONT_DIR=$(dirname $BASH_SOURCE)/front
+NODE_DIR=$(pwd dirname $BASH_SOURCE)/node
+FRONT_DIR=$(pwd dirname $BASH_SOURCE)/front
+DOCS_DIR=$(pwd dirname $BASH_SOURCE)/docs
 
 PROXY="docker run --rm --net=host jfyne/docker-grpcwebproxy /grpcwebproxy --server_http_debug_port=${PROXY_PORT} --backend_addr=localhost:${GRPC_PORT} --run_tls_server=false"
 
@@ -34,6 +35,7 @@ function print_usage() {
       ./run                 - alias for ./run npm-install && ./run proto && ./run start
       ./run start           - start in development
       ./run proto           - generate proto code
+      ./run docs            - generate documentation
       ./run build-docker    - run tests, lint and build docker images
       ./run npm-install     - install npm modules
       ./run test            - run tests and lint once
@@ -48,8 +50,9 @@ function start() {
 }
 
 function build-docker() {
-  run-tests && (cd $NODE_DIR && docker build -t "$PROJECT_NAME:node" .) &&
+  run-tests && docs && (cd $NODE_DIR && docker build -t "$PROJECT_NAME:node" .) &&
     (cd $FRONT_DIR && docker build -t "$PROJECT_NAME:front" .) &&
+    (cd $DOCS_DIR && docker build -t "$PROJECT_NAME:docs" .) &&
     printf "\n\n\n---------\\nBuild successful. Push using: \n\n\t\tdocker push $PROJECT_NAME\n---------\n\n"
 }
 
@@ -61,6 +64,15 @@ function npm-install() {
 function run-tests() {
   (cd $NODE_DIR && npm run test) &&
     (cd $FRONT_DIR && npm run lint && npm run test)
+}
+
+function docs() {
+  mkdir -p $DOCS_DIR/front
+  mkdir -p $DOCS_DIR/node
+  mkdir -p $DOCS_DIR/api
+  (cd $NODE_DIR && ./node_modules/.bin/typedoc --out ../docs/node --mode file --target ES6 ./src/) && \
+  (cd $FRONT_DIR && ./node_modules/.bin/typedoc --out ../docs/front --mode file --target ES6 ./src/) && \
+  docker run --rm  -v $(pwd)/docs/api:/out  -v $(pwd)/proto:/protos  pseudomuto/protoc-gen-doc
 }
 
 if [ "$#" -ge 2 ]; then
@@ -80,6 +92,8 @@ if [ "$#" -ge 2 ]; then
    print_usage
  elif [ "$1" == "build-docker" ]; then
    build-docker
+ elif [ "$1" == "docs" ]; then
+  docs
 else
   print_usage
   exit 1
