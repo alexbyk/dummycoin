@@ -29,7 +29,7 @@ export class ApiService extends ApiGrpc {
 
   tryLoadId() {
     const id = localStorage.getItem(KEY);
-    if (!!id) this.id = id;
+    !!id ? (this.id = id) : this.changeId(Math.random().toString(36).substring(2));
   }
 
   changeId(id: string) {
