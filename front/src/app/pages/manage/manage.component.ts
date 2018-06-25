@@ -20,6 +20,10 @@ export class ManageComponent implements OnInit {
     this.snack.success(`You id has been changed`);
   }
 
+  canChange() {
+    return this.id && this.id !== this.api.id;
+  }
+
   ngOnInit() {
   }
 
