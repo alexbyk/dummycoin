@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  defaultApiHost: 'http://192.168.0.100:9091',
-  docsBase: 'http://192.168.0.100:9093',
+  defaultApiHost: 'http://localhost:9091',
+  docsBase: 'http://localhost:9093',
 };
 
 /*
