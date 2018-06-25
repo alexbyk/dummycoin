@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '@src/app/api/api.service';
-import { MatSnackBar } from '@angular/material';
+import { SnackService } from '@src/app/snack.service';
 
 @Component({
   selector: 'app-manage',
@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material';
 })
 export class ManageComponent implements OnInit {
 
-  constructor(public api: ApiService, public snackBar: MatSnackBar) {
+  constructor(public api: ApiService, public snack: SnackService) {
     this.id = api.id;
   }
 
@@ -17,7 +17,7 @@ export class ManageComponent implements OnInit {
 
   changeId() {
     this.api.changeId(this.id);
-    this.snackBar.open(`You id has been changed`, null, { duration: 500, panelClass: 'snack-success' });
+    this.snack.success(`You id has been changed`);
   }
 
   ngOnInit() {

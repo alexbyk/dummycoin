@@ -20,7 +20,7 @@ export interface ITxItemWithType {
 export class ApiService extends ApiGrpc {
 
   /** represents a user/wallet */
-  id = 'dummy';
+  id: string;
 
   constructor() {
     super();
